@@ -10,15 +10,23 @@
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "react-router typegen && tsc"
   },
-  "dependencies": {
+  "dependencies": {    
+    "@base-ui/react": "^1.8.0",
+    "@dnd-kit/react": "catalog:",
     "@react-router/node": "7.15.1",
     "@react-router/serve": "7.15.1",
     "@workspace/ui": "workspace:*",
+    "class-variance-authority": "^0.7.1",
+    "cmdk": "^1.1.1",
+    "cn": "^0.2.4",
+    "es-toolkit": "catalog:",
     "isbot": "^5",
     "lucide-react": "^1.43.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router": "7.15.1"
+    "react-router": "7.15.1",
+    "zustand": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@react-router/dev": "7.15.1",
