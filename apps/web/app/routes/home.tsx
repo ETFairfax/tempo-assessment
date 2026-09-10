@@ -1,28 +1,49 @@
-import { Alert, AlertDescription, AlertTitle } from "@workspace/ui/components/alert"
-import { Button } from "@workspace/ui/components/button"
-import { InfoIcon } from "lucide-react"
+import { Button } from '@workspace/ui/components/button';
+import { map } from 'es-toolkit/compat';
+import { useDebounceCallback } from 'usehooks-ts';
+import { StickyNote } from '../../components/sticky-note';
+import type { Note } from '../../lib/note';
+import { useNotesStore } from '../../lib/notes-store';
 
 export default function Home() {
+  const { notes, addNote, updateNote } = useNotesStore();
+
+  const handleAddNote = () => {
+    addNote({
+      id: crypto.randomUUID(),
+      text: 'New note',
+      x: 200,
+      y: 50,
+      z: 1,
+      w: 250,
+      h: 200,
+      color: ''
+    });
+  };
+
+  const handleStickyNoteResize = (width: number, height: number, note: Note) => {
+    updateNote({ ...note, w: width, h: height });
+  };
+
+  // Debounce resize event to prevent continuously calling the state change.
+  const debouncedHandleStickyNoteResize = useDebounceCallback(handleStickyNoteResize, 500);
+
   return (
-    <div className="p-4">
-      <Alert variant="destructive" className="lg:hidden ">
-        <InfoIcon />
-        <AlertTitle>Screen size not supported</AlertTitle>
-        <AlertDescription>
-          This application is intended to be used on desktop. Minimum screen resolution: 1024x768.
-        </AlertDescription>          
-      </Alert>
-    
-      <div className="flex min-h-svh p-6">
-        <div className="hidden lg:flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-          <div>
-            <h1 className="font-medium">Project ready!</h1>
-            <p>You may now add components and start building.</p>
-            <p>We&apos;ve already added the button component for you.</p>
-            <Button className="mt-2">Button</Button>
-          </div>
-        </div>
+    <>
+      <Button onClick={handleAddNote}>Add Note</Button>
+      <div className='relative w-full overflow-hidden bg-muted h-full flex flex-1 min-h-96'>
+        {map(notes, note => (
+          <StickyNote
+            key={note.id}
+            note={note}
+            isDragging={false}
+            onResize={debouncedHandleStickyNoteResize}
+          >
+            <p>{note.id}</p>
+            <p>{note.text}</p>
+          </StickyNote>
+        ))}
       </div>
-    </div>
-  )
+    </>
+  );
 }
