@@ -3,6 +3,7 @@ import { useMoveable } from '@workspace/ui/hooks/use-moveable';
 import { map } from 'es-toolkit/compat';
 import { useCallback } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
+import { NoteBoard } from '../../components/note-board';
 import { StickyNote } from '../../components/sticky-note';
 import type { Note } from '../../lib/note';
 import { useNotesStore } from '../../lib/notes-store';
@@ -57,14 +58,8 @@ export default function Home() {
 
   return (
     <>
-      {false && <pre>{JSON.stringify(draggingId, null, 2)}</pre>}
       <Button onClick={handleAddNote}>Add Note</Button>
-      <div
-        ref={boardRef}
-        onPointerMove={onMove}
-        onPointerUp={onMoveEnd}
-        className='relative w-full overflow-hidden bg-muted h-full flex flex-1 min-h-96'
-      >
+      <NoteBoard ref={boardRef} onPointerMove={onMove} onPointerUp={onMoveEnd}>
         {map(notes, note => {
           const isDragging = draggingId === note.id;
           const renderNote =
@@ -84,7 +79,7 @@ export default function Home() {
             </StickyNote>
           );
         })}
-      </div>
+      </NoteBoard>
     </>
   );
 }
