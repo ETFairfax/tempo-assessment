@@ -24,7 +24,7 @@ export default function Home() {
   const {
     containerRef: boardRef,
     draggingId,
-    position: draggingPosition,
+    position,
     onMove,
     onMoveStart,
     onMoveEnd
@@ -62,20 +62,23 @@ export default function Home() {
   return (
     <>
       <Button onClick={handleAddNote}>Add Note</Button>
-      <NoteBoard ref={boardRef} onPointerMove={onMove} onPointerUp={onMoveEnd}>
+      <NoteBoard ref={boardRef}>
         {map(notes, note => {
           const isDragging = draggingId === note.id;
-          const renderNote =
-            draggingPosition?.id === note.id
-              ? { ...note, x: draggingPosition.x, y: draggingPosition.y }
-              : note;
+
           return (
             <StickyNote
               key={note.id}
-              note={renderNote}
+              id={note.id}
               isDragging={isDragging}
               onResize={debouncedHandleNoteResize}
               onPointerDown={onMoveStart}
+              onPointerMove={onMove}
+              onPointerUp={onMoveEnd}
+              x={position?.x ?? note.x}
+              y={position?.y ?? note.y}
+              w={note.w}
+              h={note.h}
             >
               <Textarea
                 name={note.id}

@@ -1,36 +1,47 @@
-/** biome-ignore-all lint/suspicious/noConsole: <explanation */
 import { Button } from '@workspace/ui/components/button';
 import { ButtonGroup } from '@workspace/ui/components/button-group';
 import { Card, CardContent, CardFooter } from '@workspace/ui/components/card';
 import { useResizable } from '@workspace/ui/hooks/use-resizable';
 import { MoveDiagonal2Icon } from 'lucide-react';
 import type * as React from 'react';
-import type { Note } from '../lib/note';
 
 type ResizableBoxProps = React.ComponentProps<'div'> & {
-  note: Note;
+  // note: Note;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
   isDragging: boolean;
   children: React.ReactNode;
   onResize: (id: string, width: number, height: number) => void;
 };
 
 function StickyNote({
+  id = '',
   children,
-  note,
+  // note,
+  x: left,
+  y: top,
+  w,
+  h,
   isDragging,
-  onPointerDown: handleMove,
+  onPointerDown,
+  onPointerMove,
+  onPointerUp,
   onResize
 }: ResizableBoxProps) {
-  const { x: left, y: top, w, h } = note;
-
-  const { size, isResizing, onPointerDown } = useResizable((w, h) => onResize(note.id, w, h), {
+  const {
+    size,
+    isResizing,
+    onPointerDown: onResizePointerDown
+  } = useResizable((w, h) => onResize(id, w, h), {
     w,
     h
   });
 
   return (
     <Card
-      id={note.id}
+      id={id}
       data-slot='sticky-note'
       data-active={isResizing || isDragging}
       className={`data-[active=true]:shadow-lg shadow-sm absolute p-0 border bg-card overflow-hidden flex flex-col`}
@@ -41,7 +52,9 @@ function StickyNote({
         top,
         zIndex: isDragging ? 9999 : 1
       }}
-      onPointerDown={handleMove}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
     >
       <CardContent className='flex-1 px-0'>{children}</CardContent>
       <CardFooter>
@@ -50,7 +63,7 @@ function StickyNote({
             title='Resize Note'
             onPointerDown={e => {
               e.stopPropagation(); // Keep the containers move handler from also starting a drag.
-              onPointerDown(e);
+              onResizePointerDown(e);
             }}
             variant='ghost'
             size='icon-xs'

@@ -25,15 +25,7 @@ function useMoveable(onMoved: OnMoved) {
   const dragState = useRef<DragState | null>(null);
 
   const onMoveStart = useCallback((e: React.PointerEvent<HTMLElement>) => {
-    const board = containerRef.current;
-    if (!board) {
-      return;
-    }
-
     const id = e.currentTarget.id;
-    if (!id) {
-      return;
-    }
 
     const rect = e.currentTarget.getBoundingClientRect();
 
@@ -50,8 +42,6 @@ function useMoveable(onMoved: OnMoved) {
 
   const onMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
-      // The move handler lives on the board, so resolve the dragged note from
-      // dragState rather than e.currentTarget (which is always the board).
       const drag = dragState.current;
       const board = containerRef.current;
       if (!drag || !board) {
@@ -78,7 +68,7 @@ function useMoveable(onMoved: OnMoved) {
   }, []);
 
   return {
-    containerRef, //
+    containerRef,
     draggingId,
     position,
     onMove,
