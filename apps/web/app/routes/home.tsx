@@ -5,11 +5,10 @@ import { useCallback } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
 import { NoteBoard } from '../../components/note-board';
 import { StickyNote } from '../../components/sticky-note';
-import type { Note } from '../../lib/note';
 import { useNotesStore } from '../../lib/notes-store';
 
 export default function Home() {
-  const { notes, addNote, updateNote } = useNotesStore();
+  const { notes, addNote } = useNotesStore();
 
   // MOVE
   const handleNoteMove = useCallback((id: string, x: number, y: number) => {
@@ -30,10 +29,6 @@ export default function Home() {
   } = useMoveable(debouncedHandleNoteMove);
 
   // RESIZE
-  // const handleNoteResize = (width: number, height: number, note: Note) => {
-  //   updateNote({ ...note, w: width, h: height });
-  // };
-
   const handleNoteResize = useCallback((id: string, w: number, h: number) => {
     const { resizeNote } = useNotesStore.getState();
     resizeNote(id, w, h);
