@@ -1,5 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert';
 import { Button } from '@workspace/ui/components/button';
+import { ButtonGroup } from '@workspace/ui/components/button-group';
 import { Textarea } from '@workspace/ui/components/textarea';
 import { useMoveable } from '@workspace/ui/hooks/use-moveable';
 import { map } from 'es-toolkit/compat';
@@ -70,8 +71,10 @@ export default function Home() {
         </AlertDescription>
       </Alert>
 
-      <main className='app-main'>
-        <Button onClick={handleAddNote}>Add Note</Button>
+      <main className='app-main h-dvh'>
+        <ButtonGroup className='absolute top-4 left-4'>
+          <Button onClick={handleAddNote}>Add Note</Button>
+        </ButtonGroup>
         <NoteBoard ref={boardRef}>
           {map(notes, note => {
             const isDragging = position?.id === note.id;
