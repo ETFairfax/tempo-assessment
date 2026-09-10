@@ -1,10 +1,12 @@
 import { Button } from '@workspace/ui/components/button';
+import { Textarea } from '@workspace/ui/components/textarea';
 import { useMoveable } from '@workspace/ui/hooks/use-moveable';
 import { map } from 'es-toolkit/compat';
 import { useCallback } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
 import { NoteBoard } from '../../components/note-board';
 import { StickyNote } from '../../components/sticky-note';
+import type { Note } from '../../lib/note';
 import { useNotesStore } from '../../lib/notes-store';
 
 export default function Home() {
@@ -51,6 +53,12 @@ export default function Home() {
     });
   };
 
+  // EDIT
+  const handleSave = useCallback((note: Note, value: string) => {
+    const { updateNote } = useNotesStore.getState();
+    updateNote({ ...note, text: value });
+  }, []);
+
   return (
     <>
       <Button onClick={handleAddNote}>Add Note</Button>
@@ -69,8 +77,13 @@ export default function Home() {
               onResize={debouncedHandleNoteResize}
               onPointerDown={onMoveStart}
             >
-              <p>{note.id}</p>
-              <p>{note.text}</p>
+              <Textarea
+                name={note.id}
+                className='border-none grow h-full flex-1 p-2'
+                onBlur={e => handleSave(note, e.currentTarget.value)}
+              >
+                {note.text}
+              </Textarea>
             </StickyNote>
           );
         })}

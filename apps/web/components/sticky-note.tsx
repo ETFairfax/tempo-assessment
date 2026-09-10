@@ -1,5 +1,7 @@
 /** biome-ignore-all lint/suspicious/noConsole: <explanation */
 import { Button } from '@workspace/ui/components/button';
+import { ButtonGroup } from '@workspace/ui/components/button-group';
+import { Card, CardContent, CardFooter } from '@workspace/ui/components/card';
 import { useResizable } from '@workspace/ui/hooks/use-resizable';
 import { MoveDiagonal2Icon } from 'lucide-react';
 import type * as React from 'react';
@@ -12,7 +14,7 @@ type ResizableBoxProps = React.ComponentProps<'div'> & {
   onResize: (id: string, width: number, height: number) => void;
 };
 
-export default function StickyNote({
+function StickyNote({
   children,
   note,
   isDragging,
@@ -27,11 +29,11 @@ export default function StickyNote({
   });
 
   return (
-    <div
+    <Card
       id={note.id}
       data-slot='sticky-note'
       data-active={isResizing || isDragging}
-      className={`data-[active=true]:shadow-lg shadow-sm absolute p-0 border bg-card overflow-hidden`}
+      className={`data-[active=true]:shadow-lg shadow-sm absolute p-0 border bg-card overflow-hidden flex flex-col`}
       style={{
         width: size.w,
         height: size.h,
@@ -41,20 +43,24 @@ export default function StickyNote({
       }}
       onPointerDown={handleMove}
     >
-      {children}
-      <Button
-        title='Resize Note'
-        onPointerDown={e => {
-          e.stopPropagation(); // Keep the containers move handler from also starting a drag.
-          onPointerDown(e);
-        }}
-        variant='ghost'
-        size='icon-xs'
-        className='absolute cursor-nwse-resize right-0 bottom-0'
-      >
-        <MoveDiagonal2Icon />
-      </Button>
-    </div>
+      <CardContent className='flex-1 px-0'>{children}</CardContent>
+      <CardFooter>
+        <ButtonGroup className='absolute right-0 bottom-0 bg-accent/60 w-full flex justify-end'>
+          <Button
+            title='Resize Note'
+            onPointerDown={e => {
+              e.stopPropagation(); // Keep the containers move handler from also starting a drag.
+              onPointerDown(e);
+            }}
+            variant='ghost'
+            size='icon-xs'
+            className='cursor-nwse-resize'
+          >
+            <MoveDiagonal2Icon />
+          </Button>
+        </ButtonGroup>
+      </CardFooter>
+    </Card>
   );
 }
 
