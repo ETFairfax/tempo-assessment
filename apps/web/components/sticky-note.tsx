@@ -19,7 +19,6 @@ type ResizableBoxProps = React.ComponentProps<'div'> & {
 function StickyNote({
   id = '',
   children,
-  // note,
   x: left,
   y: top,
   w,
