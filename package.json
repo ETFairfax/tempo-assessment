@@ -4,11 +4,15 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "check:ci": "biome ci .",
+    "check": "biome check --write .",
     "dev": "turbo dev",
-    "format": "turbo format",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
+    "@biomejs/biome": "catalog:",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.9.18",
