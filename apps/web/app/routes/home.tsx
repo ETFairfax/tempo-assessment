@@ -1,7 +1,9 @@
+import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert';
 import { Button } from '@workspace/ui/components/button';
 import { Textarea } from '@workspace/ui/components/textarea';
 import { useMoveable } from '@workspace/ui/hooks/use-moveable';
 import { map } from 'es-toolkit/compat';
+import { CheckCircle2Icon } from 'lucide-react';
 import { useCallback } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
 import { NoteBoard } from '../../components/note-board';
@@ -23,7 +25,6 @@ export default function Home() {
 
   const {
     containerRef: boardRef,
-    // draggingId,
     position,
     onMove,
     onMoveStart,
@@ -61,36 +62,46 @@ export default function Home() {
 
   return (
     <>
-      <Button onClick={handleAddNote}>Add Note</Button>
-      <NoteBoard ref={boardRef}>
-        {map(notes, note => {
-          const isDragging = position?.id === note.id;
+      <Alert variant='destructive' className='min-res-guard max-w-sm mt-8 mx-auto'>
+        <CheckCircle2Icon />
+        <AlertTitle>Unsupported</AlertTitle>
+        <AlertDescription>
+          This application is intended to be used on desktop. Minimum screen resolution: 1024x768.
+        </AlertDescription>
+      </Alert>
 
-          return (
-            <StickyNote
-              key={note.id}
-              id={note.id}
-              isDragging={isDragging}
-              onResize={debouncedHandleNoteResize}
-              onPointerDown={onMoveStart}
-              onPointerMove={onMove}
-              onPointerUp={onMoveEnd}
-              x={isDragging ? position.x : note.x}
-              y={isDragging ? position.y : note.y}
-              w={note.w}
-              h={note.h}
-            >
-              <Textarea
-                name={note.id}
-                className='border-none grow h-full flex-1 p-2'
-                onBlur={e => handleSave(note, e.currentTarget.value)}
+      <main className='app-main'>
+        <Button onClick={handleAddNote}>Add Note</Button>
+        <NoteBoard ref={boardRef}>
+          {map(notes, note => {
+            const isDragging = position?.id === note.id;
+
+            return (
+              <StickyNote
+                key={note.id}
+                id={note.id}
+                isDragging={isDragging}
+                onResize={debouncedHandleNoteResize}
+                onPointerDown={onMoveStart}
+                onPointerMove={onMove}
+                onPointerUp={onMoveEnd}
+                x={isDragging ? position.x : note.x}
+                y={isDragging ? position.y : note.y}
+                w={note.w}
+                h={note.h}
               >
-                {note.text}
-              </Textarea>
-            </StickyNote>
-          );
-        })}
-      </NoteBoard>
+                <Textarea
+                  name={note.id}
+                  className={`${note.color} border-none grow h-full flex-1 p-2`}
+                  onBlur={e => handleSave(note, e.currentTarget.value)}
+                >
+                  {note.text}
+                </Textarea>
+              </StickyNote>
+            );
+          })}
+        </NoteBoard>
+      </main>
     </>
   );
 }

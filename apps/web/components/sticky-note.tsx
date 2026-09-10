@@ -6,7 +6,6 @@ import { MoveDiagonal2Icon } from 'lucide-react';
 import type * as React from 'react';
 
 type ResizableBoxProps = React.ComponentProps<'div'> & {
-  // note: Note;
   x: number;
   y: number;
   w: number;

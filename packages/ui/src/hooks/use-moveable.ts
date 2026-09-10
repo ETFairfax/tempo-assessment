@@ -20,7 +20,6 @@ type OnMoved = (id: string, x: number, y: number) => void;
 function useMoveable(onMoved: OnMoved) {
   const containerRef = useRef<HTMLDivElement>(null); // The div which contains the draggable items
 
-  // const [draggingId, setDraggingId] = useState<string | null>(null);
   const [position, setPosition] = useState<Position | null>(null);
   const dragState = useRef<DragState | null>(null);
 
@@ -36,7 +35,6 @@ function useMoveable(onMoved: OnMoved) {
       width: rect.width, // note size, used to keep it inside the board
       height: rect.height
     };
-    // setDraggingId(id);
     e.currentTarget.setPointerCapture(e.pointerId);
   }, []);
 
@@ -64,7 +62,6 @@ function useMoveable(onMoved: OnMoved) {
 
   const onMoveEnd = useCallback(() => {
     dragState.current = null;
-    // setDraggingId(null);
   }, []);
 
   return {
