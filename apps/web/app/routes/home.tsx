@@ -120,7 +120,7 @@ export default function Home() {
             <div
               ref={trashRef}
               data-active={isOverTrash}
-              className='bg-red-300 p-4 border-dashed border transition-colors data-[active=true]:bg-red-500 data-[active=true]:border-solid'
+              className='bg-red-300 p-4 border-dashed border transition-colors data-[active=true]:bg-red-400 data-[active=true]:border-solid'
             >
               <TrashIcon />
             </div>
@@ -143,11 +143,10 @@ export default function Home() {
               >
                 <Textarea
                   id={note.id}
-                  className={`${note.color} border-none grow h-full flex-1 p-2`}
+                  className={`${note.color} flex-1 p-2 w-full`}
                   onBlur={e => handleSave(note, e.currentTarget.value)}
-                >
-                  {note.text}
-                </Textarea>
+                  defaultValue={note.text}
+                />
               </StickyNote>
             );
           })}
