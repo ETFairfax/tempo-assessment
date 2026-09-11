@@ -11,7 +11,7 @@ const settingsSchema = z.object({
 type Settings = z.infer<typeof settingsSchema>;
 
 type NotesStoreState = {
-  notes: Record<string, Note>; // Store as Record to speed up mutations (no searching through arrays),
+  notes: Record<Note['id'], Note>; // Store as Record to speed up mutations (no searching through arrays),
   settings: Settings;
 };
 

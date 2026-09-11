@@ -2,7 +2,7 @@
 
 ## Installation 
 
-Clone this repository then `pnpm install` form the root directory.
+Clone this repository then `pnpm install` from the root directory.
 
 ## Running the app
 
@@ -12,8 +12,8 @@ Run `pnpm dev` from the terminal
 
 1. Create a new note of the specified size at the specified position.⏳
 
-    * `add-note-form.tsx` provides the user with sliders specifing size
-    * specifing position - not implemented.  Currently the new note is placed at random.
+    * `add-note-form.tsx` provides the user with sliders to specify size
+    * specifying position - not implemented.  Currently the new note is placed at random. I would need to get the bounds of the container div which could shift when the window is resized.  Perhaps the use of a ResizeObserver could be used for this. 
 
 2. Change note size by dragging. ✅
 
@@ -21,7 +21,7 @@ Run `pnpm dev` from the terminal
 
 3. Move a note by dragging. ✅
 
-    * `use-movable.ts` - Should be able to reuse for other resize features (Not tightly coupled to this implementation).
+    * `use-movable.ts` - Should be able to reuse for other move features (Not tightly coupled to this implementation).
 
 4. Remove a note by dragging it over a predefined "trash" zone. ✅
 
@@ -47,10 +47,10 @@ possible to implement in the specified timeframe.
 
 1. Language: Typescript ✅
 
-2. You should use React without stock components. The general idea is to avoid using readymade solutions, so that we can fully assess how you design and engineer solutions in the scope of a small task like this. 
+2. You should use React without stock components. The general idea is to avoid using ready-made solutions, so that we can fully assess how you design and engineer solutions in the scope of a small task like this. 
 
     * I have use shad-cn for basic components (Buttons / Cards etc).  I started coding from scratch but found I was just making shad-cn components ❌
-    * I have made custom components (StickyNote / TrashZone) and hook where necessary ✅
+    * I have made custom components (StickyNote / TrashZone) and hooks where necessary ✅
 
 3. If your project requires building, provide the necessary instructions ✅
 
@@ -78,10 +78,14 @@ possible to implement in the specified timeframe.
 5. Saving notes to REST API. Note: you're not required to implement the API, you can mock it, but the mocks should be asynchronous.❌
 
     * Not implemented.  
-    * I would have used Tanstack Query, with possibly making an optimisic update of the cache while API is being called.
+    * I would have used Tanstack Query, with possibly making an optimistic update of the cache while API is being called.
     * Maybe a simple "toast" message or similar to confirm if the API call was successful or not. 
 
-## UI Improvements
+## Improvements
+
+The following improvements could be made to the UI:
+
+- Initial loading spinner/skeleton while the application is hydrating data from local storage. 
 
 - Introduce an "Are you sure?" dialog to confirm the user wants to delete a note.
 
@@ -94,11 +98,17 @@ possible to implement in the specified timeframe.
 
 - A delete all button - would have been handy during development.   If implemented it would be behind a settings in "Danger Zone" ⚠️ 
 
-## Thoughts
+## AI
+
+Claude Code was used to assist with the development.  
+I approached it a feature at a time, rather than taking "one shot" at the application.
+
+## Summary
 
 A fun project.
+
 I have done drag and drop using `react-dnd` before to specified drop zones; this is the first time for random positioning.
 
-This was also my first time using `zustand` - very easy to pick up.
+This was also my first time using `zustand` - very easy to pick up.  I made the choice of using `Record<Note['id'], Note>` to improve lookups — O(1) rather than O(n) with an array.
 
 Thanks for the opportunity.  I look forward to your feedback. 
