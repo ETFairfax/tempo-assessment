@@ -106,8 +106,8 @@ export default function Home() {
       x,
       y,
       z: 1,
-      w: settings.defaultHeight,
-      h: settings.defaultWidth,
+      w: settings.defaultWidth,
+      h: settings.defaultHeight,
       color: StickyNoteVariants[Math.floor(Math.random() * StickyNoteVariants.length)]
     });
   };
