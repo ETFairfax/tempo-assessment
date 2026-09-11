@@ -11,7 +11,7 @@ type NotesStoreActions = {
   moveNote: (id: Note['id'], x: number, y: number) => void;
   resizeNote: (id: Note['id'], w: number, h: number) => void;
   updateNote: (note: Note) => void;
-  deleteNote: (note: Note) => void;
+  deleteNote: (note: Note['id']) => void;
   clear: () => void;
 };
 
@@ -52,9 +52,9 @@ export const useNotesStore = create<NotesStore>()(
           notes: { ...state.notes, [note.id]: note }
         })),
 
-      deleteNote: note =>
+      deleteNote: noteId =>
         set(state => {
-          const { [note.id]: _removed, ...rest } = state.notes;
+          const { [noteId]: _removed, ...rest } = state.notes;
           return { notes: rest };
         }),
 

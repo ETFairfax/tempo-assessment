@@ -5,13 +5,12 @@ import { useResizable } from '@workspace/ui/hooks/use-resizable';
 import { MoveDiagonal2Icon } from 'lucide-react';
 import type * as React from 'react';
 
-type ResizableBoxProps = React.ComponentProps<'div'> & {
+type StickyNoteProps = React.ComponentProps<'div'> & {
   x: number;
   y: number;
   w: number;
   h: number;
   isDragging: boolean;
-  children: React.ReactNode;
   onResize: (id: string, width: number, height: number) => void;
 };
 
@@ -27,7 +26,7 @@ function StickyNote({
   onPointerMove,
   onPointerUp,
   onResize
-}: ResizableBoxProps) {
+}: StickyNoteProps) {
   const {
     size,
     isResizing,

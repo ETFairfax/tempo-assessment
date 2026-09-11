@@ -4,8 +4,9 @@ import { ButtonGroup } from '@workspace/ui/components/button-group';
 import { Textarea } from '@workspace/ui/components/textarea';
 import { useMoveable } from '@workspace/ui/hooks/use-moveable';
 import { map } from 'es-toolkit/compat';
-import { CheckCircle2Icon } from 'lucide-react';
-import { useCallback } from 'react';
+import { CheckCircle2Icon, TrashIcon } from 'lucide-react';
+import type * as React from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
 import { NoteBoard } from '../../components/note-board';
 import { StickyNote } from '../../components/sticky-note';
@@ -31,6 +32,40 @@ export default function Home() {
     onMoveStart,
     onMoveEnd
   } = useMoveable(debouncedHandleNoteMove);
+
+  // TRASH
+  const trashRef = useRef<HTMLDivElement>(null);
+  const [isOverTrash, setIsOverTrash] = useState(false);
+
+  const isPointerOverTrash = useCallback((clientX: number, clientY: number) => {
+    const trash = trashRef.current;
+    if (!trash) return false;
+
+    const trashRect = trash.getBoundingClientRect();
+    return (
+      clientX >= trashRect.left &&
+      clientX <= trashRect.right &&
+      clientY >= trashRect.top &&
+      clientY <= trashRect.bottom
+    );
+  }, []);
+
+  const handleBoardPointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      onMove(e);
+      setIsOverTrash(isPointerOverTrash(e.clientX, e.clientY));
+    },
+    [onMove, isPointerOverTrash]
+  );
+
+  const handleBoardPointerUp = useCallback(() => {
+    if (isOverTrash && position) {
+      const { deleteNote } = useNotesStore.getState();
+      deleteNote(position.id);
+    }
+    setIsOverTrash(false);
+    onMoveEnd();
+  }, [isOverTrash, position, onMoveEnd]);
 
   // RESIZE
   const handleNoteResize = useCallback((id: string, w: number, h: number) => {
@@ -72,10 +107,25 @@ export default function Home() {
       </Alert>
 
       <main className='app-main h-dvh'>
-        <ButtonGroup className='absolute top-4 left-4'>
-          <Button onClick={handleAddNote}>Add Note</Button>
-        </ButtonGroup>
-        <NoteBoard ref={boardRef}>
+        <NoteBoard
+          ref={boardRef}
+          onPointerMove={handleBoardPointerMove}
+          onPointerUp={handleBoardPointerUp}
+        >
+          <div className='absolute top-4 left-4 z-50 flex flex-col gap-2'>
+            <ButtonGroup>
+              <Button onClick={handleAddNote}>Add Note</Button>
+            </ButtonGroup>
+
+            <div
+              ref={trashRef}
+              data-active={isOverTrash}
+              className='bg-red-300 p-4 border-dashed border transition-colors data-[active=true]:bg-red-500 data-[active=true]:border-solid'
+            >
+              <TrashIcon />
+            </div>
+          </div>
+
           {map(notes, note => {
             const isDragging = position?.id === note.id;
 
@@ -84,17 +134,15 @@ export default function Home() {
                 key={note.id}
                 id={note.id}
                 isDragging={isDragging}
-                onResize={debouncedHandleNoteResize}
-                onPointerDown={onMoveStart}
-                onPointerMove={onMove}
-                onPointerUp={onMoveEnd}
                 x={isDragging ? position.x : note.x}
                 y={isDragging ? position.y : note.y}
                 w={note.w}
                 h={note.h}
+                onResize={debouncedHandleNoteResize}
+                onPointerDown={onMoveStart}
               >
                 <Textarea
-                  name={note.id}
+                  id={note.id}
                   className={`${note.color} border-none grow h-full flex-1 p-2`}
                   onBlur={e => handleSave(note, e.currentTarget.value)}
                 >
