@@ -1,17 +1,25 @@
 import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert';
 import { Button } from '@workspace/ui/components/button';
 import { Card, CardContent, CardFooter } from '@workspace/ui/components/card';
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle
+} from '@workspace/ui/components/empty';
 import { Label } from '@workspace/ui/components/label';
 import { Slider } from '@workspace/ui/components/slider';
 import { Textarea } from '@workspace/ui/components/textarea';
 import { useMoveable } from '@workspace/ui/hooks/use-moveable';
-import { map } from 'es-toolkit/compat';
-import { CheckCircle2Icon, TrashIcon } from 'lucide-react';
+import { isEmpty, map } from 'es-toolkit/compat';
+import { CheckCircle2Icon, PlusIcon } from 'lucide-react';
 import type * as React from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
 import { NoteBoard } from '../../components/note-board';
 import { StickyNote } from '../../components/sticky-note';
+import { TrashZone } from '../../components/trash-zone';
 import type { Note } from '../../lib/note';
 import { useNotesStore } from '../../lib/notes-store';
 
@@ -82,14 +90,13 @@ export default function Home() {
   const handleAddNote = () => {
     const boardRect = boardRef.current?.getBoundingClientRect();
 
-    // Place new note in the center of the board.
-    // Ideally swap out with collision detection and place randomly on the board.
-    const x = boardRect ? (boardRect.width - settings.defaultHeight) / 2 : 0;
-    const y = boardRect ? (boardRect.height - settings.defaultWidth) / 2 : 0;
+    // Place new note in random area on the board
+    const x = boardRect ? Math.random() * Math.max(boardRect.width - settings.defaultHeight, 0) : 0;
+    const y = boardRect ? Math.random() * Math.max(boardRect.height - settings.defaultWidth, 0) : 0;
 
     addNote({
       id: crypto.randomUUID(),
-      text: 'New note',
+      text: '',
       x,
       y,
       z: 1,
@@ -115,7 +122,7 @@ export default function Home() {
         </AlertDescription>
       </Alert>
 
-      <main className='app-main h-dvh bg-muted'>
+      <main className='app-main h-dvh bg-background'>
         <NoteBoard
           ref={boardRef}
           onPointerMove={handleBoardPointerMove}
@@ -123,7 +130,7 @@ export default function Home() {
         >
           <div className='absolute top-4 left-4 z-50 flex flex-col gap-2'>
             <Card>
-              <CardContent className='flex flex-col gap-8'>
+              <CardContent className='flex flex-col gap-4 '>
                 <Label htmlFor='default-height'>Height</Label>
                 <Slider
                   id='default-height'
@@ -156,14 +163,25 @@ export default function Home() {
               </CardFooter>
             </Card>
 
-            <div
-              ref={trashRef}
-              data-active={isOverTrash}
-              className='bg-red-300 p-4 border-dashed border transition-colors data-[active=true]:bg-red-400 data-[active=true]:border-solid flex items-center gap-4 grow'
-            >
-              <TrashIcon /> The Bin
-            </div>
+            <TrashZone ref={trashRef} data-active={isOverTrash} />
           </div>
+
+          {isEmpty(notes) && (
+            <Empty className='h-full bg-card'>
+              <EmptyHeader>
+                <EmptyTitle>No Notes</EmptyTitle>
+                <EmptyDescription className='max-w-xs text-pretty'>
+                  Any notes added will appear here.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button variant='outline' onClick={handleAddNote}>
+                  <PlusIcon data-icon='inline-start' />
+                  Add Note
+                </Button>
+              </EmptyContent>
+            </Empty>
+          )}
 
           {map(notes, note => {
             const isDragging = position?.id === note.id;
