@@ -167,12 +167,10 @@ export default function Home() {
           </div>
 
           {isEmpty(notes) && (
-            <Empty className='h-full bg-card'>
+            <Empty>
               <EmptyHeader>
                 <EmptyTitle>No Notes</EmptyTitle>
-                <EmptyDescription className='max-w-xs text-pretty'>
-                  Any notes added will appear here.
-                </EmptyDescription>
+                <EmptyDescription>Any notes added will appear here.</EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
                 <Button variant='outline' onClick={handleAddNote}>
