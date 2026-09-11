@@ -1,6 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert';
 import { Button } from '@workspace/ui/components/button';
-import { Card, CardContent, CardFooter } from '@workspace/ui/components/card';
 import {
   Empty,
   EmptyContent,
@@ -8,8 +7,6 @@ import {
   EmptyHeader,
   EmptyTitle
 } from '@workspace/ui/components/empty';
-import { Label } from '@workspace/ui/components/label';
-import { Slider } from '@workspace/ui/components/slider';
 import { Textarea } from '@workspace/ui/components/textarea';
 import { useMoveable } from '@workspace/ui/hooks/use-moveable';
 import { isEmpty, map } from 'es-toolkit/compat';
@@ -17,6 +14,7 @@ import { CheckCircle2Icon, PlusIcon } from 'lucide-react';
 import type * as React from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
+import { AddNoteForm } from '../../components/add-note-form';
 import { NoteBoard } from '../../components/note-board';
 import {
   StickyNote,
@@ -28,7 +26,11 @@ import type { Note } from '../../lib/note';
 import { useNotesStore } from '../../lib/notes-store';
 
 export default function Home() {
-  const { notes, addNote, settings, updateSettings } = useNotesStore();
+  const {
+    notes,
+    addNote,
+    settings: { defaultHeight, defaultWidth }
+  } = useNotesStore();
 
   // MOVE
   const handleNoteMove = useCallback((id: string, x: number, y: number) => {
@@ -95,10 +97,8 @@ export default function Home() {
     const boardRect = boardRef.current?.getBoundingClientRect();
 
     // Place new note in random area on the board
-    const x = boardRect ? Math.random() * Math.max(boardRect.width - settings.defaultWidth, 0) : 0;
-    const y = boardRect
-      ? Math.random() * Math.max(boardRect.height - settings.defaultHeight, 0)
-      : 0;
+    const x = boardRect ? Math.random() * Math.max(boardRect.width - defaultWidth, 0) : 0;
+    const y = boardRect ? Math.random() * Math.max(boardRect.height - defaultHeight, 0) : 0;
 
     addNote({
       id: crypto.randomUUID(),
@@ -106,8 +106,8 @@ export default function Home() {
       x,
       y,
       z: 1,
-      w: settings.defaultWidth,
-      h: settings.defaultHeight,
+      w: defaultWidth,
+      h: defaultHeight,
       color: StickyNoteVariants[Math.floor(Math.random() * StickyNoteVariants.length)]
     });
   };
@@ -135,40 +135,7 @@ export default function Home() {
           onPointerUp={handleBoardPointerUp}
         >
           <div className='sticky mt-4 left-4 flex flex-col gap-2 z-150'>
-            <Card>
-              <CardContent className='flex flex-col gap-4 '>
-                <Label htmlFor='default-height'>Height</Label>
-                <Slider
-                  id='default-height'
-                  min={100}
-                  max={500}
-                  value={settings.defaultHeight}
-                  onValueChange={value =>
-                    updateSettings({
-                      defaultHeight: Array.isArray(value) ? value[0] : value
-                    })
-                  }
-                  className='w-full'
-                />
-                <Label htmlFor='default-width'>Width</Label>
-                <Slider
-                  id='default-width'
-                  min={100}
-                  max={500}
-                  value={settings.defaultWidth}
-                  onValueChange={value =>
-                    updateSettings({
-                      defaultWidth: Array.isArray(value) ? value[0] : value
-                    })
-                  }
-                  className='w-full'
-                />
-              </CardContent>
-              <CardFooter>
-                <Button onClick={handleAddNote}>Add Note</Button>
-              </CardFooter>
-            </Card>
-
+            <AddNoteForm onAddNote={handleAddNote} height={defaultHeight} width={defaultWidth} />
             <TrashZone ref={trashRef} data-active={isOverTrash} />
           </div>
 
