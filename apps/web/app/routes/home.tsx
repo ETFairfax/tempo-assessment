@@ -18,7 +18,11 @@ import type * as React from 'react';
 import { useCallback, useRef, useState } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
 import { NoteBoard } from '../../components/note-board';
-import { StickyNote } from '../../components/sticky-note';
+import {
+  StickyNote,
+  type StickyNoteVariant,
+  StickyNoteVariants
+} from '../../components/sticky-note';
 import { TrashZone } from '../../components/trash-zone';
 import type { Note } from '../../lib/note';
 import { useNotesStore } from '../../lib/notes-store';
@@ -104,7 +108,7 @@ export default function Home() {
       z: 1,
       w: settings.defaultHeight,
       h: settings.defaultWidth,
-      color: ''
+      color: StickyNoteVariants[Math.floor(Math.random() * StickyNoteVariants.length)]
     });
   };
 
@@ -130,7 +134,7 @@ export default function Home() {
           onPointerMove={handleBoardPointerMove}
           onPointerUp={handleBoardPointerUp}
         >
-          <div className='absolute top-4 left-4 z-50 flex flex-col gap-2'>
+          <div className='sticky mt-4 left-4 flex flex-col gap-2 z-150'>
             <Card>
               <CardContent className='flex flex-col gap-4 '>
                 <Label htmlFor='default-height'>Height</Label>
@@ -197,6 +201,7 @@ export default function Home() {
                 h={note.h}
                 onResize={debouncedHandleNoteResize}
                 onPointerDown={onMoveStart}
+                variant={note.color as StickyNoteVariant} // Not ideal
               >
                 <Textarea
                   id={note.id}
