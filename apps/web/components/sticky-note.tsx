@@ -1,6 +1,4 @@
 import { Button } from '@workspace/ui/components/button';
-import { ButtonGroup } from '@workspace/ui/components/button-group';
-import { Card, CardContent, CardFooter, CardHeader } from '@workspace/ui/components/card';
 import { useResizable } from '@workspace/ui/hooks/use-resizable';
 import { MoveDiagonal2Icon } from 'lucide-react';
 import type * as React from 'react';
