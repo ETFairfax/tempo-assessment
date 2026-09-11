@@ -1,3 +1,5 @@
+# Tempo - Sticky Notes Assessment
+
 ## Installation 
 
 Clone this repository then `pnpm install` form the root directory.
@@ -59,6 +61,7 @@ possible to implement in the specified timeframe.
 1. Entering/editing note text
 
     * `onBlur` function of the `<Textarea/>` updates the notes text property. 
+    * Scroll bar becomes visible when needed.
 
 2. Moving notes to front (in case of overlapping notes)  ✅
 
@@ -66,7 +69,7 @@ possible to implement in the specified timeframe.
 
 3. Saving notes to local storage (restoring them on page load)  ✅
 
-    * Use `zustand` for state management and its `persist` function for saving/hydrating to/from local storage.  This was my first time using zustand.
+    * Use `zustand` for state management and its `persist` function for saving/hydrating to/from local storage. 
 
 4. Different note colors ✅
 
@@ -77,3 +80,25 @@ possible to implement in the specified timeframe.
     * Not implemented.  
     * I would have used Tanstack Query, with possibly making an optimisic update of the cache while API is being called.
     * Maybe a simple "toast" message or similar to confirm if the API call was successful or not. 
+
+## UI Improvements
+
+- Introduce an "Are you sure?" dialog to confirm the user wants to delete a note.
+
+-  Add a `...` button to the bottom bar of the StickNote with options to
+
+    - Change color
+    - Delete note
+
+- Add a dedicated drag handle to the sticky note. At the moment the user drags the note from anywhere in the div. This prevents the user from being able to select the text from the text area; should they wish to copy the text for example.
+
+- A delete all button - would have been handy during development.   If implemented it would be behind a settings in "Danger Zone" ⚠️ 
+
+## Thoughts
+
+A fun project.
+I have done drag and drop using `react-dnd` before to specified drop zones; this is the first time for random positioning.
+
+This was also my first time using `zustand` - very easy to pick up.
+
+Thanks for the opportunity.  I look forward to your feedback. 
