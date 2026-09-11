@@ -1,12 +1,22 @@
+import z from 'zod';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware'; // Persist our notes to local storage
 import type { Note } from './note';
 
+const settingsSchema = z.object({
+  defaultHeight: z.number().min(100).max(500),
+  defaultWidth: z.number().min(100).max(500)
+});
+
+type Settings = z.infer<typeof settingsSchema>;
+
 type NotesStoreState = {
-  notes: Record<string, Note>; // Store as Record to speed up mutations (no searching through arrays)
+  notes: Record<string, Note>; // Store as Record to speed up mutations (no searching through arrays),
+  settings: Settings;
 };
 
 type NotesStoreActions = {
+  updateSettings: (setting: Partial<Settings>) => void;
   addNote: (note: Note) => void;
   moveNote: (id: Note['id'], x: number, y: number) => void;
   resizeNote: (id: Note['id'], w: number, h: number) => void;
@@ -23,6 +33,15 @@ export const useNotesStore = create<NotesStore>()(
   persist(
     set => ({
       notes: initialNotes,
+      settings: {
+        defaultHeight: 250,
+        defaultWidth: 250
+      },
+
+      updateSettings: settings =>
+        set(state => ({
+          settings: { ...state.settings, ...settings }
+        })),
 
       addNote: note =>
         set(state => ({

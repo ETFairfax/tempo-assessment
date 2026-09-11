@@ -16,7 +16,7 @@ import type { Note } from '../../lib/note';
 import { useNotesStore } from '../../lib/notes-store';
 
 export default function Home() {
-  const { notes, addNote } = useNotesStore();
+  const { notes, addNote, settings, updateSettings } = useNotesStore();
 
   // MOVE
   const handleNoteMove = useCallback((id: string, x: number, y: number) => {
@@ -79,19 +79,22 @@ export default function Home() {
   const debouncedHandleNoteResize = useDebounceCallback(handleNoteResize, 150);
 
   // ADD
-
-  const [defaultHeight, setDefaultHeight] = useState(200);
-  const [defaultWidth, setDefaultWidth] = useState(200);
-
   const handleAddNote = () => {
+    const boardRect = boardRef.current?.getBoundingClientRect();
+
+    // Place new note in the center of the board.
+    // Ideally swap out with collision detection and place randomly on the board.
+    const x = boardRect ? (boardRect.width - settings.defaultHeight) / 2 : 0;
+    const y = boardRect ? (boardRect.height - settings.defaultWidth) / 2 : 0;
+
     addNote({
       id: crypto.randomUUID(),
       text: 'New note',
-      x: 200,
-      y: 50,
+      x,
+      y,
       z: 1,
-      w: defaultHeight,
-      h: defaultWidth,
+      w: settings.defaultHeight,
+      h: settings.defaultWidth,
       color: ''
     });
   };
@@ -123,18 +126,28 @@ export default function Home() {
               <CardContent className='flex flex-col gap-8'>
                 <Label htmlFor='default-height'>Height</Label>
                 <Slider
+                  id='default-height'
                   min={100}
                   max={500}
-                  value={defaultHeight}
-                  onValueChange={value => setDefaultHeight(Array.isArray(value) ? value[0] : value)}
+                  value={settings.defaultHeight}
+                  onValueChange={value =>
+                    updateSettings({
+                      defaultHeight: Array.isArray(value) ? value[0] : value
+                    })
+                  }
                   className='w-full'
                 />
                 <Label htmlFor='default-width'>Width</Label>
                 <Slider
+                  id='default-width'
                   min={100}
                   max={500}
-                  value={defaultWidth}
-                  onValueChange={value => setDefaultWidth(Array.isArray(value) ? value[0] : value)}
+                  value={settings.defaultWidth}
+                  onValueChange={value =>
+                    updateSettings({
+                      defaultWidth: Array.isArray(value) ? value[0] : value
+                    })
+                  }
                   className='w-full'
                 />
               </CardContent>
@@ -169,6 +182,7 @@ export default function Home() {
               >
                 <Textarea
                   id={note.id}
+                  placeholder='Add note....'
                   className={`${note.color} flex-1 p-2 w-full`}
                   onBlur={e => handleSave(note, e.currentTarget.value)}
                   defaultValue={note.text}
