@@ -91,8 +91,10 @@ export default function Home() {
     const boardRect = boardRef.current?.getBoundingClientRect();
 
     // Place new note in random area on the board
-    const x = boardRect ? Math.random() * Math.max(boardRect.width - settings.defaultHeight, 0) : 0;
-    const y = boardRect ? Math.random() * Math.max(boardRect.height - settings.defaultWidth, 0) : 0;
+    const x = boardRect ? Math.random() * Math.max(boardRect.width - settings.defaultWidth, 0) : 0;
+    const y = boardRect
+      ? Math.random() * Math.max(boardRect.height - settings.defaultHeight, 0)
+      : 0;
 
     addNote({
       id: crypto.randomUUID(),
@@ -173,7 +175,7 @@ export default function Home() {
                 <EmptyDescription>Any notes added will appear here.</EmptyDescription>
               </EmptyHeader>
               <EmptyContent>
-                <Button variant='outline' onClick={handleAddNote}>
+                <Button onClick={handleAddNote}>
                   <PlusIcon data-icon='inline-start' />
                   Add Note
                 </Button>
