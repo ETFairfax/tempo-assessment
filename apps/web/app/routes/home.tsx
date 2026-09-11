@@ -1,6 +1,8 @@
 import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert';
 import { Button } from '@workspace/ui/components/button';
-import { ButtonGroup } from '@workspace/ui/components/button-group';
+import { Card, CardContent, CardFooter } from '@workspace/ui/components/card';
+import { Label } from '@workspace/ui/components/label';
+import { Slider } from '@workspace/ui/components/slider';
 import { Textarea } from '@workspace/ui/components/textarea';
 import { useMoveable } from '@workspace/ui/hooks/use-moveable';
 import { map } from 'es-toolkit/compat';
@@ -77,6 +79,10 @@ export default function Home() {
   const debouncedHandleNoteResize = useDebounceCallback(handleNoteResize, 150);
 
   // ADD
+
+  const [defaultHeight, setDefaultHeight] = useState(200);
+  const [defaultWidth, setDefaultWidth] = useState(200);
+
   const handleAddNote = () => {
     addNote({
       id: crypto.randomUUID(),
@@ -84,8 +90,8 @@ export default function Home() {
       x: 200,
       y: 50,
       z: 1,
-      w: 250,
-      h: 200,
+      w: defaultHeight,
+      h: defaultWidth,
       color: ''
     });
   };
@@ -106,23 +112,43 @@ export default function Home() {
         </AlertDescription>
       </Alert>
 
-      <main className='app-main h-dvh'>
+      <main className='app-main h-dvh bg-muted'>
         <NoteBoard
           ref={boardRef}
           onPointerMove={handleBoardPointerMove}
           onPointerUp={handleBoardPointerUp}
         >
           <div className='absolute top-4 left-4 z-50 flex flex-col gap-2'>
-            <ButtonGroup>
-              <Button onClick={handleAddNote}>Add Note</Button>
-            </ButtonGroup>
+            <Card>
+              <CardContent className='flex flex-col gap-8'>
+                <Label htmlFor='default-height'>Height</Label>
+                <Slider
+                  min={100}
+                  max={500}
+                  value={defaultHeight}
+                  onValueChange={value => setDefaultHeight(Array.isArray(value) ? value[0] : value)}
+                  className='w-full'
+                />
+                <Label htmlFor='default-width'>Width</Label>
+                <Slider
+                  min={100}
+                  max={500}
+                  value={defaultWidth}
+                  onValueChange={value => setDefaultWidth(Array.isArray(value) ? value[0] : value)}
+                  className='w-full'
+                />
+              </CardContent>
+              <CardFooter>
+                <Button onClick={handleAddNote}>Add Note</Button>
+              </CardFooter>
+            </Card>
 
             <div
               ref={trashRef}
               data-active={isOverTrash}
-              className='bg-red-300 p-4 border-dashed border transition-colors data-[active=true]:bg-red-400 data-[active=true]:border-solid'
+              className='bg-red-300 p-4 border-dashed border transition-colors data-[active=true]:bg-red-400 data-[active=true]:border-solid flex items-center gap-4 grow'
             >
-              <TrashIcon />
+              <TrashIcon /> The Bin
             </div>
           </div>
 
